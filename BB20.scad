@@ -1,12 +1,12 @@
 include <mjk.scad>
 
 $fs=0.5; $fn=36; e=0.01;
-gapd= 0.1; gapv = 0.05; 
-ddd = 0.3; // [0..1] 0 --> easy to rotate, 1 --> hard to rotate
-
-D0 = 10;
-R0 = 1;
-I = 5;
+gapd= 0.1; // Gap for outer dimensions
+gapv = 0.1; // Gap for peg
+ddd = 0.5; // [0..1] 0 --> easy to rotate, 1 --> hard to rotate
+D0 = 10; // Size of peg
+R0 = 1; // Corner radius of peg
+I = 5; // Inner hole inside the peg
 
 type="GUI";
 
@@ -136,8 +136,8 @@ module BB20Beam2m(dim=[1,1,1], gapd, gapv)
   ty(dim.y*10) cmy() ty(dim.y*10) 
   {
     translate([10, -gapd, 10]) rotx(-90) rotz(45) BB20male(-gapv);
-    translate([7, 2.8, gapd]) cube([6, 0.8, 3.3]);
-    translate([7, 0.5, gapd]) cube([6, 5, 0.4]);
+    translate([7, 2.0, gapd]) cube([6, 0.8, 3.3]);
+    translate([7, 0, gapd]) cube([6, 5, 0.4]);
   }
 }
 
@@ -272,25 +272,26 @@ module hull_loop()
 }
 
 
-*ty(-10) tx(15) BB20male();
+ty(-10) tx(15) BB20male();
 
 module BB20male(o=-0.1, c=1)
 {  
-  H=[-e,1.5,3,3.5,5];
+  H=[0,1,2,3,4,5];
   d=D0+2*o; // through hole
   rr = R0+o;
   intersection()
   {
-    color("pink") cylinder(h=H[4], d2=10, d1=20); // bounding conus
+    color("pink") cylinder(h=H[5], d2=10, d1=20); // bounding conus
     difference()
     {
       hull_tower()
       {
-        tz(H[0]) cube_round([d,d,e], rr, center=true);
-        tz(H[1]) cylinder(h=e, d=d);
+        tz(H[0]) cylinder(h=e, d=d, center=true);
+        tz(H[1]) cylinder(h=e, d=d, center=true);
         tz(H[2]) cube_round([d,d,e], rr, center=true);
         tz(H[3]) cube_round([d,d,e], rr, center=true);
-        tz(H[4]) cylinder(h=e, d=d);
+        tz(H[4]) cylinder(h=e, d=d, center=true);
+        tz(H[5]) cylinder(h=e, d=d, center=true);
       }
       cube([I, I, 20], true);
       tz(H[4]) hull() { cube([I+1,I+1,e], true); cube([I,I,1], true);}
@@ -301,24 +302,31 @@ module BB20male(o=-0.1, c=1)
 
 
 
-*tx(40) ty(-10) BB20female(H=5);
+tx(40) ty(-10) BB20female(H=8);
 
 module BB20female(o=0.1, c=1, H=10)
 {
-  Z=[0,1.5,3,3.5,5];
+  Z=[0,1,2,3,4,5];
   d=D0+2*o;   
   rr = R0+o;
   D=sqrt(2)*(D0-2*R0)+2*R0;
   
   tz(H/2) cube_round([d,d,H], rr, center=true);
   
+  hull_tower()
+  {
+    tz(Z[0]) cube_round([d+1,d+1,e], rr, center=true);//cylinder(h=e, d=d, center=true);
+    tz(Z[1]) cube_round([d,d,e], rr, center=true);//cylinder(h=e, d=d, center=true);
+    tz(Z[4]) cube_round([d,d,e], rr, center=true);//cylinder(h=e, d=d, center=true);
+    tz(Z[5]) cube_round([d+1,d+1,e], rr, center=true);//cylinder(h=e, d=d, center=true);
+  }
   hull_loop()
   {
-    tz(Z[1]) cylinder(h=e, d=d);
-    tz(Z[0]) cylinder(h=e, d=D, center=true);
-    tz(Z[2]+1) rotz(45) cube_round([d,d,2], rr, center=true);   
-    tz(Z[2]+1) cylinder(d=D-ddd, h=2, center=true);
-    tz(Z[2]+1) cube_round([d,d,2], rr, center=true);
+    tz(Z[1]) cylinder(h=Z[4]-Z[1], d=d);
+    tz(Z[2]) cylinder(h=Z[3]-Z[2], d=D-ddd);
+    tz((Z[2]+Z[3])/2) rotz(45) cube_round([d,d,Z[3]-Z[2]], rr, center=true);
+    tz((Z[2]+Z[3])/2)  cube_round([d,d,Z[3]-Z[2]], rr, center=true);
+    
   }
 }
 
