@@ -1,14 +1,17 @@
-include <mjk.scad>
+use <mjk.scad>
 
 $fs=0.5; $fn=36; e=0.01;
-gapd= 0.1; // Gap for outer dimensions
-gapv = 0.1; // Gap for peg
-ddd = 0.5; // [0..1] 0 --> easy to rotate, 1 --> hard to rotate
+gapd= 0.10; // Gap for outer dimensions
+gapv = 0.15; // Gap for peg
+gapv2 = 0.12; // Gap for peg
+ddd = 0.50; // [0..1] 0 --> easy to rotate, 1 --> hard to rotate
 D0 = 10; // Size of peg
-R0 = 1; // Corner radius of peg
+R0 = 2; // Corner radius of peg
 I = 5; // Inner hole inside the peg
+support = true;
 
 type="GUI";
+L=10;
 
 if (type=="GUI")
 {
