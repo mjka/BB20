@@ -25,11 +25,12 @@ if (type=="GUI")
     tz(-gapd) tx(-25) BB20Beam1m([1,1,1], gapd=gapd, gapv=gapv);
     tz(-gapd) tx(-50) BB20Beam2m([1,1,1], gapd=gapd, gapv=gapv);
     tz(-gapd) tx(-75) BB20Beam2m([1,2,1], gapd=gapd, gapv=gapv);
+    tz(-gapd) tx(75) BB20Brick45();
     tz(-gapd) tx(100) BB20345();
     
   tx(50)ty(10) BB20Con(gapv);
-  tx(50)ty(30) BB20ConSide(gapv);
-  tx(50)ty(50) BB20ConHead(gapv);
+  tx(50)ty(30) BB20ConSide(gapv+gapv2);
+  //tx(50)ty(50) BB20ConHead(gapv);
   }
 } 
 else if (type == "Beam")
@@ -46,14 +47,18 @@ else if (type == "Plate")
   BB20Plate(dim, gapd=gapd, gapv=gapv);
 else if (type == "PlateR")
   BB20PlateR(dim, gapd=gapd, gapv=gapv);
+else if (type == "Brick45")
+  BB20Brick45(dim);
+else if (type == "345")
+  BB20345();
 else if (type == "Con")
   BB20Con(gapv);
 else if (type == "ConS")
-  BB20ConSide(gapv*1.5);
+  BB20ConSide(gapv+gapv2);
 else if (type == "ConH")
-  BB20ConHead(gapv, extra=0);
+  BB20Con(gapv, head=true, h=5+L, rings=2);
 else if (type == "ConH1")
-  BB20ConHead(gapv, extra=15);
+  BB20Con(gapv, head=true, h=5+L, rings=1);
 
 
 
