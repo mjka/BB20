@@ -25,7 +25,7 @@ if (type=="GUI")
     tz(-gapd) tx(-25) BB20Beam1m([1,1,1], gapd=gapd, gapv=gapv);
     tz(-gapd) tx(-50) BB20Beam2m([1,1,1], gapd=gapd, gapv=gapv);
     tz(-gapd) tx(-75) BB20Beam2m([1,2,1], gapd=gapd, gapv=gapv);
-    tz(-gapd) tx(75) BB20Brick45();
+    
     tz(-gapd) tx(100) BB20345();
     
   tx(50)ty(10) BB20Con(gapv);
@@ -51,15 +51,6 @@ else if (type == "Brick45")
   BB20Brick45(dim);
 else if (type == "345")
   BB20345();
-else if (type == "Con")
-  BB20Con(gapv);
-else if (type == "ConS")
-  BB20ConSide(gapv+gapv2);
-else if (type == "ConH")
-  BB20Con(gapv, head=true, h=5+L, rings=2);
-else if (type == "ConH1")
-  BB20Con(gapv, head=true, h=5+L, rings=1);
-
 
 
 
@@ -88,7 +79,7 @@ module BB20345()
     rotz(-asin(3/5)) cube([20*4, 20*5, 1]-[2,2,0]);
   }
   // Support 
-  for (y=[1:4]) translate([50, 20*y-10, 10])SupportFem();
+  for (y=[1:4]) translate([50, 20*y-10, 10]) SupportFem();
   for (x=[1:3]) translate([20*x-10, -5, 10]) rotz() SupportFem();
   for (y=[1:5]) rotz(-asin(3/5))  translate([-5, 20*y-10, 10]) SupportFem();
     
@@ -132,99 +123,6 @@ module BB20PlateR(dim=[1,1], h=4, gapd, gapv)
       tz(-10) BB20female(gapv+gapv2, H=5.5);
     }
 }
-
-module BB20Brick45(dim=[1,1,4], peg=0, gapd=gapd, gapv=gapv)
-{  
-  g3=[gapd,gapd,gapd];
-  difference()
-  {
-    intersection()
-    {
-      translate(g3) cubec(20*dim-2*g3, 1.0*[1,1,1]);
-      dia = 1.41459*20;
-      translate([-1,1, 0]) rotz(-45) translate(g3) cubec([dia*dim.x, dia*dim.y, 20*dim.z]-2*g3, 1.0*[1,1,1]);
-    }
-    if (peg < 2) for (z=[1:dim.z]) for (y=[1:dim.y]) translate([dim.x*20-10, 20*y-10, 20*z-10]) 
-    {
-      mx() roty() my() tz(-10) BB20female(gapv, H=5.5); 
-    }
-    if (peg < 1) for (z=[1:dim.z]) for (x=[1:dim.x]) 
-      translate([x*20-10, 0, 20*z-10]) rotx(-90) BB20female(gapv, H=5.5); 
-    //translate([10, dim.y*20, 10]) rotx() BB20female(gapv); 
-    //if(back) translate([10, 0, 10]) rotx(-90) cylinder(d=12.5, h=dim.y*20);
-    //translate([10, 0, 10]) rotx(-90) tz(10*dim.y) 
-    //  cube_round([D0+2*gapv,D0+2*gapv,dim.y*20-4], R0+gapv, center=true);
-  }
-  
-  if (peg > 0) union()
-  {
-    translate([10, gapd, 10]) rotx(90) rotz(45) BB20male(-gapv);
-    translate([7, -3.6, gapd]) cube([6, 0.8, 3.3]);
-    translate([7, -5.5, gapd]) cube([6, 5, 0.4]);
-  }
-  
-  if (peg < 2) for (z=[1:dim.z]) for (y=[1:dim.y]) translate([dim.x*20-10, 20*y-10, 20*z-10]) 
-    SupportFem();
-  if (peg < 1) for (z=[1:dim.z]) for (x=[1:dim.x]) 
-      translate([x*20-10, -5, 20*z-10]) rotz() SupportFem();
-}
-
-module BB20Beam1m(dim=[1,1,1], gapd, gapv)
-{
-  difference()
-  {
-    BB20Beam(dim, gapd=gapd, front=false, back=true);
-    tx(10) tz(10) rotx(-90) cylinder(d=sqrt(2)*I, h=dim.y*20);
-  }
-  
-  {
-    translate([10, gapd, 10]) rotx(90) rotz(45) BB20male(-gapv);
-    translate([7, -3.6, gapd]) cube([6, 0.8, 3.3]);
-    translate([7, -5.5, gapd]) cube([6, 5, 0.4]);
-  }
-}
-
-module BB20Beam2m(dim=[1,1,1], gapd, gapv)
-{
-  difference()
-  {
-    BB20Beam(dim, gapd=gapd, front=false, back=false);
-    tx(10) tz(10) rotx(-90) cylinder(d=sqrt(2)*I, h=dim.y*20);
-  }
-  ty(dim.y*10) cmy() ty(dim.y*10) 
-  {
-    translate([10, -gapd, 10]) rotx(-90) rotz(45) BB20male(-gapv);
-    translate([7, 2.0, gapd]) cube([6, 0.8, 3.3]);
-    translate([7, 0, gapd]) cube([6, 5, 0.4]);
-  }
-}
-
-module BB20Beam(dim=[1,2,1], horz=true, vert=true, front=true, back=true, gapd=gapd, gapv=gapv)
-{
-  g3=[gapd,gapd,gapd];
-  difference()
-  {
-    translate(g3) cubec(20*dim-2*g3, 1.0*[1,1,1]);
-    for (y=[1:dim.y]) translate([10, 20*y-10, 10]) 
-    {
-      if(vert) tz(-10) BB20female(gapv-gapv2*1.2);
-      if(vert) mz() tz(-10) BB20female(gapv-gapv2*0.8);
-      if(horz) cmx() roty() my() tz(-10) BB20female(gapv); 
-    }
-    if(front) translate([10, 0, 10]) rotx(-90) BB20female(gapv); 
-    if(back) translate([10, dim.y*20, 10]) rotx() BB20female(gapv); 
-    //if(back) translate([10, 0, 10]) rotx(-90) cylinder(d=12.5, h=dim.y*20);
-    translate([10, 0, 10]) rotx(-90) tz(10*dim.y) 
-      cube_round([D0+2*gapv,D0+2*gapv,dim.y*20-4], R0+gapv, center=true);
-  }
-  if (horz) for (y=[1:dim.y]) translate([10, 20*y-10, 10]) 
-    cmx() SupportFem();
-  //tx(-7.5) { difference() { cube([3, 6, 10], true); cube([2, 5, 12], true); }  }
-  if (front) translate([10, -5, 10]) rotz() SupportFem();
-  if (back)  translate([10, 20*dim.y-10, 10]) rotz() SupportFem();
-}
-
-
 
 
 module BB20BeamL(dim=[1,2,1], gapd=0.1, gapv=0.05, bottom=true)
@@ -272,73 +170,7 @@ module BB20BeamU(dim=[1,2,1], gapd=0.1, gapv=0.05, bottom=true)
 }
 
 
-module BB20ConSide(gapv=gapv) 
-{
-  intersection() 
-  {
-    color("green") tz(D0/2) cube([D0, 10-2*gapv, D0], true);
-    tz(D0/2) rotx() cmz() BB20male(-gapv);
-  }  
-  if (support)
-  difference() {tz(0.1) cube([15,15,0.2], true); cube([8.8,10.4,1], true); }
-}
 
-
-module BB20ConOld(gapv=gapv)
-{ 
-  tz(5) intersection() {
-    color("blue") cylinder(r=10, h=10, center=true);
-    cmz() BB20male(-gapv);
-  }
-  if (support) 
-    difference() { cylinder(h=0.2, d=15);cylinder(h=2, d=11.1, center=true);}
-}
-
-module BB20Con(gapv=gapv, head=true, h=10, rings=1)
-{   
-  difference()
-  {
-    union()
-    {
-      for (n=[1:rings])
-      {         
-        tz(2.5+h-5*n) mirror([0,0,n%2]) tz(-2.5) BB20male(-gapv);
-      }
-      
-      if (head) rotz(45) hull_tower()
-      {
-        rr = 4;
-        d = (19 - 2*rr) / sqrt(2) + 2*rr;  
-        tz(0) cube_round([d-2,d-2,e], rr-1, center=true);
-        tz(1) cube_round([d,d,e], rr, center=true);
-        tz(4) cube_round([d,d,e], rr, center=true);
-        tz(5+e) cube_round([d-2,d-2,e], rr-1, center=true);
-      }
-      cylinder(d=D0-2*gapv, h=h);
-    }
-    hull_tower() 
-    {
-      tz(0) cube([I+1,I+1,e], true); 
-      tz(0.5) cube([I,I,e], true);
-      tz(2) cube([I,I,e], true);
-      tz(3) cylinder(h=e, d=sqrt(2)*I, true);
-      tz(h-3) cylinder(h=e, d=sqrt(2)*I, true);
-      tz(h-2) cube([I,I,e], true); 
-      tz(h-0.5) cube([I,I,e], true); 
-      tz(h)cube([I+1,I+1,e], true); 
-    }
-    //cube([I, I, 20], true);
-    //tz(H[4]) hull() { cube([I+1,I+1,e], true); cube([I,I,1], true);}
-    //tower([o-e, 2.5, 3.5], [sqrt(2)*I,sqrt(2)*I,I]);
-    //tz(-1) cylinder(h=len+-5, d=sqrt(2)*I);
-  }
-//  tz(5) intersection() {
-//    color("blue") cylinder(r=10, h=10, center=true);
-//    cmz() BB20male(-gapv);
-//  }
-//  if (support) 
-//    difference() { cylinder(h=0.2, d=15);cylinder(h=2, d=11.1, center=true);}
-}
 
 module BB20ConHeadOld(gapv=gapv, extra=15)
 { 
@@ -362,10 +194,15 @@ module BB20ConHeadOld(gapv=gapv, extra=15)
   }
 }
 
+module SupportMale()
+{  
+    translate([-3, -3.0, gapd-10]) cube([6, 0.8, 3.8]);
+    translate([-3, -5, gapd-10]) cube([6, 5, 0.4]);
+}
 
 *ty(-10) tx(15) BB20male();
 
-module BB20male(o=-0.1, c=1)
+module BB20male(o=-gapv, c=1)
 {  
   H=[0, 0.6, 2.2, 2.8, 4.4, 5];
   d=D0+2*o; // through hole
