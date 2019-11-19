@@ -22,8 +22,8 @@ cat "$IN" | while read L ; do
 		NAME=$(echo "$CMD" | sed -e 's/\(\[[0-9x ]*\),/\1x/g' | sed -e 's/\(\[[0-9x ]*\),/\1x/g' | sed -e 's/\(\[[0-9x ]*\),/\1x/g' | tr -d ' []);' | tr -c '[:alnum:]\n' '_' | sed -e 's/_*$//')
 	
 	        echo "exporting $OUT/$NAME"
-	        echo -e "use <$IN>\n$L\n" > "$TMP"
-		echo -e "\n**$CMD**\n\n![$NAME.png]($NAME.png)\n\n    use <$IN>\n    $L\n\n[$NAME.3mf]($NAME.3mf) [$NAME.stl]($NAME.stl)\n\n" >> "$MD"
+	        echo -e "use <$IN>\n$CMD\n" > "$TMP"
+		echo -e "\n**$CMD**\n\n![$NAME.png]($NAME.png)\n\n    use <$IN>\n    $CMD\n\n[$NAME.3mf]($NAME.3mf) [$NAME.stl]($NAME.stl)\n\n" >> "$MD"
 		continue	
 	        openscad -o "$OUT/$NAME.3mf" "$TMP"
 	        openscad -o "$OUT/$NAME.stl" "$TMP"
