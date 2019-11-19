@@ -6,6 +6,7 @@ gapv = 0.15; // Gap for peg
 gapv2 = 0.12; // Gap for peg
 
 type ="";
+///# Connectors
 
 PART(  0,  0, 0) BB20ConSide();
 PART( 20,  0, 0) BB20ConNoHead();
