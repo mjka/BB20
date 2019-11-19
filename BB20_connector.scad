@@ -11,7 +11,10 @@ PART(  0,  0, 0) BB20ConSide();
 PART( 20,  0, 0) BB20ConNoHead();
 PART(  0, 20, 0) BB20Con(10);
 PART( 20, 20, 0) BB20Con(15);
+PART( 20, 20, 0) BB20Con(20);
 PART( 40, 20, 0) BB20Con(30);
+PART( 40, 20, 0) BB20Con(35);
+PART( 60, 20, 0) BB20Con(50);
 
 PART(  0, 40, 0) BB20Con(15,2);
 PART( 20, 40, 0) BB20Con(30,2);

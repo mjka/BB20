@@ -202,7 +202,7 @@ module SupportMale()
 
 *ty(-10) tx(15) BB20male();
 
-module BB20male(o=-gapv, c=1)
+module BB20male(o=-gapv)
 {  
   H=[0, 0.6, 2.2, 2.8, 4.4, 5];
   d=D0+2*o; // through hole
