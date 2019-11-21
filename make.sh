@@ -3,7 +3,7 @@
 #set -x
 
 IN="$1"
-TMP=temp.scad
+TMP="$1.temp.scad"
 
 if [ ! -f "$IN" -o "${IN: -5}" != ".scad" ] ; then 
 	echo "Usage: $0 <INPUT.scad>"
@@ -23,8 +23,9 @@ cat "$IN" | while read L ; do
 	
 	        echo "exporting $OUT/$NAME"
 	        echo -e "use <$IN>\n$CMD\n" > "$TMP"
-		echo -e "\n**$CMD**\n\n![$NAME.png]($NAME.png)\n\n    use <$IN>\n    $CMD\n\n[$NAME.3mf]($NAME.3mf) [$NAME.stl]($NAME.stl)\n\n" >> "$MD"
-		continue	
+		echo -e "\n**$CMD**\n\n![$NAME.png]($NAME.png)\n\n    use <$IN>\n    $CMD\n\n[$NAME.3mf]($NAME.3mf)" >> "$MD"
+	        echo -e "[$NAME.stl]($NAME.stl)\n\n" >> "$MD"
+		#continue	
 	        openscad -o "$OUT/$NAME.3mf" "$TMP"
 	        openscad -o "$OUT/$NAME.stl" "$TMP"
 	        openscad -o "$OUT/$NAME.png" --viewall --autocenter "$TMP"
@@ -33,6 +34,7 @@ cat "$IN" | while read L ; do
 	fi
 
 done
+rm "$TMP"
 
 
 

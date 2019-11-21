@@ -14,16 +14,6 @@ e=0.1;
   tx(-5) ty(6) cubec([10, 80, H], [2,2,2]);
 }
 
-union()
-{
-  difference() 
-  {
-    D=25;
-    tower([0,1, H-1, H], [D-2, D, D, D-2]);
-    tz(1) ty(-24) tx(-8) cube_round([16, 30, 6], 3);
-  }
-  tx(-5) ty(6) cubec([10, 80, H], [2,2,2]);
-}
 
 *union() 
 {
