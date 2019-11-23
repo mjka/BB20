@@ -17,7 +17,7 @@ module BB20BearingInsert()
     {
       cylinder(d=23.5, h=1.5);
       cylinder(d=17, h=2); 
-      tower([0,18,18,19], [14.8, 14.8, 15.5,13.5]);
+      tower([0,18,18,19], [15, 15, 15.5,13.5]);
     }
     hull_tower()
     {
@@ -28,7 +28,7 @@ module BB20BearingInsert()
     }
     intersection()
     {
-      cube([D0-0.8, 40, 50], true);
+      cube([D0-0.1, 40, 50], true);
       tz(-1) cylinder(d=19.1, h=50);
     }
   }
@@ -107,9 +107,7 @@ module BB20BallBearingSide(dim=[1,3,1], H=40.01)
   ty( 0) BB20supportFemales(dim=[1,1,1], pos=[both, [1,0], both]);
   ty(20) BB20supportFemales(dim=[1,1,1], pos=[[1,0], none, both]);
   ty(40) BB20supportFemales(dim=[1,1,1], pos=[both, [0,1], both]);
-  tx(30) ty(30) tz(gapv) difference() {
-    cylinder(d=16, h=7.2);cylinder(d=15.2, h=20, center=true);
-  }
+  tx(30) ty(30) tz(gapv) difference() { cylinder(d=16, h=7.2); tz(0.5) cylinder(d=15, h=7); }
 }
 
 module BB20BallBearingSide2(dim=[1,3,1], H=40.01)
@@ -132,9 +130,7 @@ module BB20BallBearingSide2(dim=[1,3,1], H=40.01)
   ty( 0) BB20supportFemales(dim=[1,1,1], pos=[both, [1,0], both]);
   //ty(20) BB20supportFemales(dim=[1,1,1], pos=[[1,0], none, both]);
   ty(40) BB20supportFemales(dim=[1,1,1], pos=[both, [0,1], both]);
-  tx(10) ty(30) tz(gapv) difference() {
-    cylinder(d=16, h=7.2);cylinder(d=15.2, h=20, center=true);
-  }
+  tx(10) ty(30) tz(gapv) difference() { cylinder(d=16, h=7.2); tz(0.5) cylinder(d=15, h=7); }
 }
 module BB20BallBearingS()
 {
