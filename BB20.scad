@@ -85,6 +85,60 @@ module BB20345()
     
 }
 
+module BB20Cube(dim=[1,1,1])
+{  
+  g3=[gapd,gapd,gapd];
+  translate(g3) cubec(20*dim-2*g3, 1.0*[1,1,1]);
+}
+
+both=[1,1]; none=[0,0];
+
+module BB20females(dim=[1,1,1], pos=[both,both,both], H=10.01, gapd=gapd, gapv=gapv)
+{
+    for (x=[1:dim.x]) for (y=[1:dim.y]) translate([20*x-10, 20*y-10,0 ]) 
+    {
+      if(pos.z[0]) BB20female(gapv-gapv2*1.2, H);
+      if(pos.z[1]) tz(dim.z*20) mz() BB20female(gapv-gapv2*0.8, H);
+    }
+    for (y=[1:dim.y]) for (z=[1:dim.z]) translate([0, 20*y-10, 20*z-10])
+    {
+     if (pos.x[0]) BB20femaleV(gapv, H); 
+     if (pos.x[1]) tx(20*dim.x) mx() BB20femaleV(gapv, H); 
+    }
+    for (x=[1,dim.x]) for (z=[1:dim.z]) translate([20*x-10, 0, 20*z-10]) 
+    {
+      if (pos.y[0]) rotz() BB20femaleV(gapv, H); 
+      if (pos.y[1]) ty(dim.y*20) rotz(-90) BB20femaleV(gapv, H); 
+    }
+}
+
+module BB20femaleV(gapv, H=10.01)
+{
+  tx(10) roty(-90) tz(10) mz() BB20female(gapv, H);
+}
+
+module BB20supportFemale(ignore)
+{
+  if (support)
+  {
+    tz(-0.1) tx(2.5) difference() { cube([3,6,9.8], true);  cube([2,5,12], true); }
+  }
+}
+
+
+module BB20supportFemales(dim=[1,1,1], pos=[both,both,both], gapd=gapd, gapv=gapv)
+{
+    for (y=[1:dim.y]) for (z=[1:dim.z]) translate([0, 20*y-10, 20*z-10])
+    {
+     if (pos.x[0]) BB20supportFemale(gapv); 
+     if (pos.x[1]) tx(20*dim.x) mx() BB20supportFemale(gapv); 
+    }
+    for (x=[1,dim.x]) for (z=[1:dim.z]) translate([20*x-10, 0, 20*z-10]) 
+    {
+      if (pos.y[0]) rotz() BB20supportFemale(gapv); 
+      if (pos.y[1]) ty(dim.y*20) rotz(-90) BB20supportFemale(gapv); 
+    }
+}
 
 module SupportFem()
 {
@@ -139,12 +193,6 @@ module BB20BeamU(dim=[1,2,1], gapd=0.1, gapv=0.05, bottom=true)
 
 }
 
-
-module BB20Cube(dim=[1,1,1])
-{
-  g3=[gapd,gapd,gapd];
-  translate(g3)  cubec(20*dim-2*g3, 1.0*[1,1,1]);
-}
 
 
 
@@ -207,7 +255,7 @@ module BB20male(o=-gapv)
 
 *tx(40) ty(-10) BB20female(H=8);
 
-module BB20female(o=gapv, c=1, H=10)
+module BB20female(o=gapv, H=10)
 {
   Z=[0, 0.6, 2.2, 2.8, 4.4, 5];
   d=D0+2*o;   
