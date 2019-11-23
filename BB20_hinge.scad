@@ -6,7 +6,8 @@ type="";
 PART() BB20HingeFlat(1);
 PART(0,25) BB20HingeFlat(2);
 PART(25) BB20HingeFlat(4);
-PART(50) BB20HingeCube(2);
+PART(50) BB20HingeCube(1);
+PART(50, 25) BB20HingeCube(2);
 
 
 
@@ -34,29 +35,33 @@ module BB20HingeFlat(L=2)
 }
   
 
-module BB20HingeCube(L=2)
+module BB20HingeCube(H=1)
 {
   g3=[gapd,gapd,gapd];
   R=10-gapd;
   difference()
   {
-    BB20Cube([1,1,1]);
-    BB20females([1,1,1], [[1,0], both, both]);
+    BB20Cube([1,1,H]);
+    BB20females([1,1,H], [[1,0], both, both]);
   }
   tx(40) difference()
   {
-    BB20Cube([1,1,1]);
-    BB20females([1,1,1], [[0,1], both, both]);
+    BB20Cube([1,1,H]);
+    BB20females([1,1,H], [[0,1], both, both]);
   }
   intersection()
   {
-    tx(30) ty(10) union()
+    for (z=[0:H]) tz(20*z) tx(30) ty(10) union()
     {
       scharnier_a([12,20,20], R, spalt=0.3, freiheit=[-90, 90]);
       scharnier_i([12,20,20], R, spalt=0.3, freiheit=[-90, 90]);
     }
-    BB20Cube([3,1,1]);
+    difference() {
+    BB20Cube([3,1,H]);
+    tx(20)     BB20females([1,1,H], [none, none, both], 5.5);
+ 
+    }
   }
-  BB20supportFemales(pos=[[1,0], both] );
-  tx(40) BB20supportFemales(pos=[[0,1], both] );
+  BB20supportFemales([1,1,H],pos=[[1,0], both] );
+  tx(40) BB20supportFemales([1,1,H],pos=[[0,1], both] );
 }
