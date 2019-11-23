@@ -28,7 +28,7 @@ cat "$IN" | while read L ; do
 		#continue	
 	        openscad -o "$OUT/$NAME.3mf" "$TMP"
 	        openscad -o "$OUT/$NAME.stl" "$TMP"
-	        openscad -o "$OUT/$NAME.png" --viewall --autocenter "$TMP"
+	        openscad -o "$OUT/$NAME.png" --viewall --autocenter --imgsize 256x256 "$TMP"
 	elif echo "$L" | grep -q "///" ; then
 		echo "${L#*///}" >> "$MD"
 	fi

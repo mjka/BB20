@@ -94,36 +94,6 @@ module SupportFem()
   }
 }
 
-module BB20Plate(dim=[1,1], gapd, gapv)
-{  
-  g3=[gapd,gapd,gapd];
-  difference()
-  {
-    translate(g3) cubec([20*dim.x, 20*dim.y, 5]-2*g3, 1.0*[1,1,1]);
-    for (x=[1:dim.x]) for (y=[1:dim.y]) translate([20*x-10, 20*y-10, 10]) 
-      tz(-10) BB20female(gapv);
-   }
-}
-
-
-module BB20PlateR(dim=[1,1], h=4, gapd, gapv)
-{  
-  g3=[gapd,gapd,gapd];
-  difference()
-  {
-    x = dim.x*20-2*gapd;
-    r = (4*h*h + x*x) / (8 * h); d=2*r;
-    intersection()
-    {
-      translate(g3) cubec([20*dim.x, 20*dim.y, 10]-2*g3, 1.0*[1,1,1]);
-      tz(5+h-r) tx(x/2) rotx(-90) 
-        tower([gapd, 1+gapv, dim.y*20-1-gapv, dim.y*20-gapv], [d-2, d, d, d-2]);
-    }
-    for (x=[1:dim.x]) for (y=[1:dim.y]) translate([20*x-10, 20*y-10, 10]) 
-      tz(-10) BB20female(gapv+gapv2, H=5.5);
-    }
-}
-
 
 module BB20BeamL(dim=[1,2,1], gapd=0.1, gapv=0.05, bottom=true)
 {
@@ -169,6 +139,12 @@ module BB20BeamU(dim=[1,2,1], gapd=0.1, gapv=0.05, bottom=true)
 
 }
 
+
+module BB20Cube(dim=[1,1,1])
+{
+  g3=[gapd,gapd,gapd];
+  translate(g3)  cubec(20*dim-2*g3, 1.0*[1,1,1]);
+}
 
 
 
