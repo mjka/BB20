@@ -105,7 +105,7 @@ module BB20females(dim=[1,1,1], pos=[both,both,both], H=10.01, gapd=gapd, gapv=g
      if (pos.x[0]) BB20femaleV(gapv, H); 
      if (pos.x[1]) tx(20*dim.x) mx() BB20femaleV(gapv, H); 
     }
-    for (x=[1,dim.x]) for (z=[1:dim.z]) translate([20*x-10, 0, 20*z-10]) 
+    for (x=[1:dim.x]) for (z=[1:dim.z]) translate([20*x-10, 0, 20*z-10]) 
     {
       if (pos.y[0]) rotz() BB20femaleV(gapv, H); 
       if (pos.y[1]) ty(dim.y*20) rotz(-90) BB20femaleV(gapv, H); 
@@ -117,12 +117,17 @@ module BB20femaleV(gapv, H=10.01)
   tx(10) roty(-90) tz(10) mz() BB20female(gapv, H);
 }
 
-module BB20supportFemale(ignore)
-{
+module Support()
+{  
   if (support)
   {
-    tz(-0.1) tx(2.5) difference() { cube([3,6,9.8], true);  cube([2,5,12], true); }
+    color("#22FF22") children();
   }
+}
+
+module BB20supportFemale(ignore)
+{
+  Support() tz(-0.1) tx(2.5) difference() { cube([3,6,9.8], true);  cube([2,5,12], true); }
 }
 
 
@@ -133,7 +138,7 @@ module BB20supportFemales(dim=[1,1,1], pos=[both,both,both], gapd=gapd, gapv=gap
      if (pos.x[0]) BB20supportFemale(gapv); 
      if (pos.x[1]) tx(20*dim.x) mx() BB20supportFemale(gapv); 
     }
-    for (x=[1,dim.x]) for (z=[1:dim.z]) translate([20*x-10, 0, 20*z-10]) 
+    for (x=[1:dim.x]) for (z=[1:dim.z]) translate([20*x-10, 0, 20*z-10]) 
     {
       if (pos.y[0]) rotz() BB20supportFemale(gapv); 
       if (pos.y[1]) ty(dim.y*20) rotz(-90) BB20supportFemale(gapv); 
