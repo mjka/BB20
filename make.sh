@@ -26,9 +26,9 @@ cat "$IN" | while read L ; do
 		echo -e "\n**$CMD**\n\n![$NAME.png]($NAME.png)\n\n    use <$IN>\n    $CMD\n\n[$NAME.3mf]($NAME.3mf)" >> "$MD"
 	        echo -e "[$NAME.stl]($NAME.stl)\n\n" >> "$MD"
 		#continue	
-	        openscad -o "$OUT/$NAME.3mf" "$TMP"
-	        openscad -o "$OUT/$NAME.stl" "$TMP"
-	        openscad -o "$OUT/$NAME.png" --viewall --autocenter --imgsize 256x256 "$TMP"
+	        openscad -D GUI=0 -o "$OUT/$NAME.3mf" "$TMP"
+	        openscad -D GUI=0 -o "$OUT/$NAME.stl" "$TMP"
+	        openscad -o "$OUT/$NAME.png" --viewall --autocenter --imgsize 256 256 "$TMP"
 	elif echo "$L" | grep -q "///" ; then
 		echo "${L#*///}" >> "$MD"
 	fi
