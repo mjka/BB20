@@ -2,9 +2,9 @@ include <BB20.scad>
 
 type="";
 
-*  union() {
-PART(-100) BB20LogCorner(4);
-PART(-75) BB20LogCorner(3);
+*union() {
+//PART(-100) BB20LogCorner(4);
+//PART(-75) BB20LogCorner(3);
 PART(-50) BB20LogCorner(2);
 PART(-25) BB20LogCorner(1);
 }
@@ -33,7 +33,14 @@ PART(75,75) BB20LogHalfCorner(3);
 PART(100) BB20LogHalfCorner(4);
 PART(125) BB20LogHalfCorner(8);
 
-
+module LogCut()
+{ 
+  mx() rotz() intersection()
+  {
+    tz(5-gapd) cube([20, 20, 10+2*gapd]);
+    intersection_for(x=[-5,5]) tx(10+x) tz(10) rotx(-90) cylinder(h=20, d=30+gapd*2);
+  }
+}
 
 module Log(L)
 {
@@ -49,8 +56,7 @@ module BB20LogHalfCorner(L)
   difference()
   {
     tz(-10) Log(L); 
-    
-    tz(15) ty(L==1?10:30) tx(10) rotz() scale(1.03) translate([-10, -10, -10]) Log(1);
+    ty(L==1?0:20) LogCut();
     tz(gapd-20) cube([20, 20*L, 20]);
     for(y=[10:20:L*20]) ctz([5,0]) ty(y) tx(10) BB20female();
   }
@@ -92,12 +98,23 @@ module BB20LogCorner(L)
   difference()
   {
     Log(L);
-    tz(-5) ty(30) tx(10) rotz() scale(1.03) translate([-10, -10, -10]) Log(1);
-    tz(25) ty(30) tx(10) rotz() scale(1.03) translate([-10, -10, -10]) Log(1);
+    ctz([+10,-10]) ty(20) LogCut();
+    
+    //tz(-5) ty(30) tx(10) rotz() scale(1.03) translate([-10, -10, -10]) Log(1);
+    //tz(25) ty(30) tx(10) rotz() scale(1.03) translate([-10, -10, -10]) Log(1);
     BB20females([1,1,1], [none, none, both]); 
     ty(L*20-20) BB20females([1,1,1], [none, [0,1], none]);
-    if (L>2) ty(40) BB20females([1,L-2,1], [none, none, [0,1]]);
+    if (L>2) ty(40) BB20females([1,L-2,1], [none, none, both]);
     if (L>1) ctz([5,10]) ty(30) tx(10) BB20female();
+  }
+  if (L>1)
+  {
+    tz(gapd) ty(20+2) tx(1) SupportCube([18,16, 4.5], false );
+    tz(gapd) ty(20+4) tx(4) SupportCube([12,12, 4.5], false );
+  }
+  if (L!=2)
+  {
+    BB20supportFemales([1,L,1], [none, [0,1], none]);
   }
 }
 
