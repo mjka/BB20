@@ -62,7 +62,7 @@ module BB20Window(dim, t)
     for (y=[0:10:19.9*dim.y]) tx(2.5) ty(y) tz(2.5) rotx(-90) 
     {
      tower([0,0.5,4.5,5], [di+1,di, di, di+1]);
-     tz(7.5) cube([5,5,5], true);
+     tz(7.5) ty(-2.5) cube([5.5,5.5,5.5], true);
      tower([5-gapd,5.5,9.5, 10+gapd], [do, do+1, do+1, do]);
 
     }
