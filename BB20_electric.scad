@@ -1,11 +1,69 @@
 include <BB20.scad>
+include <MCAD/servos.scad>
 
 type="";
 GUI=1;
 
+PART() BB20Servo();
 //PART(100) BB20Light();
-PART(0) BB20Motor();
+//PART(0) BB20Motor();
 PART(-30, -30) BB20MotorFlansch();
+
+
+//tx(40) alignds420([0,0,0], 0, screws = 0, axle_lenght = 0);
+
+module ServoM(spos, a=0)
+{
+  translate(spos) ty(40) my() futabas3003([0,0,0],a);
+}
+
+module BB20Servo()
+{
+  dim=[1,4,3];
+  spos=[0, 20, 10];
+  
+  difference()
+  {
+    BB20Cube(dim);
+    ty(60) BB20females([1,1,3], [[1,1], [0,1], [0,1]], H=5.4);
+    tz(40) BB20females([1,1,1], [both, [1,0], [0,0]], H=5.4);
+    tz( 0) BB20females([1,4,1], [none, none, [1,0]], H=5.4);
+    tz(40) ty(40) BB20females([1,1,1], [none, none, [0,1]], H=5.4);
+    tz(40)  BB20females([1,1,1], [none, none, [0,1]], H=5.4);
+    // Servo + Clearance
+    translate(spos+[0,-8, 27])  cube([20, 56, 4]);  
+    translate(spos+[0,-0.5,-2]) cube([20, 41, 40]);
+    translate(spos+[0,5,35])   cube([20, 10, 10]);
+    futabas3003(spos, 0);
+    // Stecker:
+    tz(30) tx(2) roty() WSG([1,1,1]);
+    color("red") tx(10) ty(20) tz(19) cube([18, 15, 30], true);
+    color("purple") translate(spos+[5,-8,2])  cube([26, 10, 6]);
+    //color("purple") translate(spos+[10,22,0])  cube([6, 55, 12], true);
+    // Schrauben:
+    for (x=[5,15]) for(y=[-4,44]) translate(spos+[x,y,0]) 
+    {
+      cylinder(h=60, d=3);
+      tz(28) cylinder(h=30, d=7);
+    }
+    // Flansch
+    translate(spos+[10,10,35]) cylinder(h=20, d=16);
+  }
+  //if (GUI) color("black")  ServoM(spos, 0);
+    ty(60) BB20supportFemales([1,1,3], [[1,1], [0,1], [0,1]]);
+    tz(40) BB20supportFemales([1,1,1], [both, [1,0], [0,0]]);
+
+  translate(spos+[0.5,1,-1.5]) SupportCube([19, 38, 39]);
+  translate(spos+[0.5,-2,28]) SupportCube([19, 44, 2.5]);
+  translate([10,10.5,20]) SupportCube([3, 4, 16.5], true);
+}
+
+module SupportCube(dim, center=false)
+{
+  t = center ? [0,0,0]: dim * 0.5;
+  Support() translate(t) difference() { cube(dim, true); cube(dim-[1,1,-1], true); }
+}
+
 
 module BB20MotorFlansch()
 {
@@ -18,29 +76,30 @@ module BB20MotorFlansch()
     }
     cube([3.9, 5.5, 18], true);
     tz(10+6) cube_round([D0,D0,12], R0, true);
+    cylinder(h=20, d=2);
   }
 }
 
-module DeckelSchnitt(dim, o)
-{
-  o3=[o,o,o];
-  
-  difference()
-  {
-    translate(-o3) tz(dim.z*20-20) cubec(20*[dim.x,dim.y,1]+2*o3,[1,1,1]);
-    ty(dim.y*10) cmy() ty(dim.y*-10) // vorne und hinten
-    translate(-o3) tz(dim.z*20-20) ty(-e) hull() {
-      cube([dim.x*20+2*o, e,  20+2*o]);
-      tx(5) ty(5) cube([dim.x*20-10+2*o, e, 15+2*o]);
-    }
-    translate(-o3) tz(dim.z*20-20) tz(-e) hull() {
-      cube([dim.x*20+2*o,dim.y*20+2*o, e]);
-      tx(5) ty(5) cube([dim.x*20-10+2*o, dim.y*20-10+2*o, 5+e]);
-    }
-  }
-}
-
-tx(100) CubeSchnitt([2,2,2], -0);
+//module DeckelSchnitt(dim, o)
+//{
+//  o3=[o,o,o];
+//  
+//  difference()
+//  {
+//    translate(-o3) tz(dim.z*20-20) cubec(20*[dim.x,dim.y,1]+2*o3,[1,1,1]);
+//    ty(dim.y*10) cmy() ty(dim.y*-10) // vorne und hinten
+//    translate(-o3) tz(dim.z*20-20) ty(-e) hull() {
+//      cube([dim.x*20+2*o, e,  20+2*o]);
+//      tx(5) ty(5) cube([dim.x*20-10+2*o, e, 15+2*o]);
+//    }
+//    translate(-o3) tz(dim.z*20-20) tz(-e) hull() {
+//      cube([dim.x*20+2*o,dim.y*20+2*o, e]);
+//      tx(5) ty(5) cube([dim.x*20-10+2*o, dim.y*20-10+2*o, 5+e]);
+//    }
+//  }
+//}
+//
+//tx(100) CubeSchnitt([2,2,2], -0);
 
 
 module CubeSchnitt(dim, o, hh=20)
@@ -59,7 +118,13 @@ module CubeSchnitt(dim, o, hh=20)
       cube([dim.x*20+2*o,dim.y*20+2*o, e]);
       tx(5) ty(5) tz(-5-e) cube([dim.x*20-10+2*o, dim.y*20-10+2*o, 5+e]);
     }
-    translate(o3+[5,0,hh]) cube(dim*20+2*o3-[10,0,5]);
+    translate(o3+[5,0,40]) cube(dim*20+2*o3-[10,0,5]);
+    translate(o3+[5,60,hh]) cube(dim*20+2*o3-[10,0,5]);
+//    *difference()
+//    {
+//      translate(o3+[5,0,5]) cube(dim*20+2*o3-[10,0,5]);
+//      children();
+//    }
   }
 }
 
@@ -79,10 +144,13 @@ module BB20Deckel(dim)
 
 module Schneider(dim, hh=20)
 {
-  
+  //echo($children);
   intersection()
   {
-    CubeSchnitt(dim, -gapd, hh); // kleiner
+    CubeSchnitt(dim, -gapd, hh) // kleiner
+    {
+      children(3);
+    }
     union()
     {
       children(0);
@@ -99,7 +167,7 @@ module Schneider(dim, hh=20)
         children(0); 
         children(2);
       }
-      CubeSchnitt(dim, gapd, hh); // groeser
+      CubeSchnitt(dim, gapd, hh) children(3); // groeser
     }
   }
 }
@@ -113,21 +181,32 @@ module BB20Motor()
     difference()
     {
       BB20Cube(dim);
-      BB20females(dim, [both, [0,1], both], H=5.4);
-      BB20females(dim-[0,0,1], [none, [1,0], none], H=5.4);
+      tz( 0) BB20females([dim.x, dim.y, 1], [both, [1,1], [1,0]], H=5.4);
+      tz(20) BB20females([dim.x, dim.y, 1], [both, [1,0], none], H=5.4);
+      tz(40) BB20females([dim.x, dim.y, 1], [both, [0,1], [0,1]], H=5.4);
+      //BB20females(dim-[0,0,1], [none, [1,0], none], H=5.4);
       ty(5) BB20females(dim-[0,1/2,1], [none, both, none], H=5.4);   
       WSG(dim);
       tx(30) ty(70) tz(30) rotz(-90) Getriebemotor();  
       tx(30) ty(70) tz(30) roty() cylinder(h=dim.x*20, d=16, center=true);
-      tx(30) ty(70) tz(30) roty() cylinder(h=dim.x*20-10, d=18, center=true);
-      tx(30) tz(30) ty(20) cube([50,20, 50], true);
+      tx(30) ty(70) tz(30) roty() cylinder(h=dim.x*20-10 , d=18, center=true);
+      tx(30) tz(30) ty(20) cube([50, 20, 47], true);
     }
-    {
-      BB20supportFemales(dim, [both, none]);
+    union() {
+      tz( 0) BB20supportFemales([dim.x, dim.y, 1], [both, none]);
+      tz(20) BB20supportFemales([dim.x,     3, 1], [both, none]);
+      tz(40) BB20supportFemales([dim.x, dim.y, 1], [both, none]);
     }
-    {
-      BB20supportFemales(dim, [none, both]);
+    union() {
+      tz( 0) BB20supportFemales([dim.x, dim.y, 1], [none, [1,1]]);
+      tz(20) BB20supportFemales([dim.x, dim.y, 1], [none, [1,0]]);
+      tz(40) BB20supportFemales([dim.x, dim.y, 1], [none, [0,1]]);
     }
+    union() {
+      translate(o3+[5,0,30]) cube(dim*20+2*o3-[10,0,5]);
+      //cube([dim.x*20, 60, 40]);
+      //cube([dim.x*20, dim.y*20, dim.z*10]); 
+  }
   }
   
   
