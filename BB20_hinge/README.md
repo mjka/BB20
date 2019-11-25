@@ -35,6 +35,18 @@
 
 
 
+**BB20HingeCube(1);**
+
+![BB20HingeCube_1.png](BB20HingeCube_1.png)
+
+    use <BB20_hinge.scad>
+    BB20HingeCube(1);
+
+[BB20HingeCube_1.3mf](BB20HingeCube_1.3mf)
+[BB20HingeCube_1.stl](BB20HingeCube_1.stl)
+
+
+
 **BB20HingeCube(2);**
 
 ![BB20HingeCube_2.png](BB20HingeCube_2.png)
