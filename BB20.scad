@@ -125,6 +125,11 @@ module Support()
   }
 }
 
+module SupportCube(dim, center=false)
+{
+  t = center ? [0,0,0]: dim * 0.5;
+  Support() translate(t) difference() { cube(dim, true); cube(dim-[1,1,-1], true); }
+}
 module BB20supportFemale(ignore)
 {
   Support() tz(-0.1) tx(2.5) difference() { cube([3,6,9.8], true);  cube([2,5,12], true); }
