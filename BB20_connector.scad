@@ -10,6 +10,10 @@ type ="";
 
 PART(  0,  0, 0) BB20ConSide();
 PART( 20,  0, 0) BB20ConNoHead();
+PART( 40,  0, 0) BB20ConNoHead(15);
+PART( 60,  0, 0) BB20ConNoHead(20);
+PART( 80,  0, 0) BB20ConNoHead(25);
+
 PART(  0, 20, 0) BB20Con(10);
 PART( 20, 20, 0) BB20Con(15);
 PART( 20, 20, 0) BB20Con(20);
@@ -45,9 +49,9 @@ module BB20ConOld(gapv=gapv)
     difference() { cylinder(h=0.2, d=15);cylinder(h=2, d=11.1, center=true);}
 }
 
-module BB20ConNoHead(head=false, rings=2, support=true, rings=2)
+module BB20ConNoHead(l=10, support=true)
 {
-  BB20Con(head=head, rings=rings, support=support);
+  BB20Con(head=false, h=l, rings=l/5, support=support);
 }
 
 module BB20Con(h=10, rings=1, gapv=gapv, head=true, support=false)
