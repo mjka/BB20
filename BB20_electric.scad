@@ -16,13 +16,150 @@ GUI=1;
 /// * Pin 8: GND DATA 
 /// * Pin 9: NeoPixel-IN 
 /// * Pin 10: NeoPixel-OUT 
+///
+///All devices need to connect Pin 9 and Pin 10.
 
 
-PART() BB20Servo();
+
+PART() BB20MotoBitBottom();
+PART(100) BB20MotoBitTop();
+//PART() BB20Servo();
 //PART(100) BB20Light();
 //PART(0) BB20Motor();
-PART(-30, -30) BB20MotorFlansch();
+//PART(-30, -30) BB20MotorFlansch();
+//PART() BB20BoxA([2,5,3], lock=true);
+//PART(50) BB20BoxB([2,5,3]);
 
+
+module BB20BoxA(dim, o=-gapd, lock=false)
+{
+  d=dim*20;
+  difference()
+  {
+    BB20Cube(dim);
+    
+    // Center
+    tx(10+o) ty(5+o) tz(5+o) cube([d.x-20-2*o, d.y-10-2*o, d.z]);
+    if (!lock) ty(5+o) tz(5+o) cube([d.x, d.y-10-2*o, d.z]);
+    // Top
+    tz(dim.z*20+o) hull() {
+      tz(o) cube([d.x, d.y, 10]);
+      tx(5+o) ty(5+o) tz(-5) cube([d.x-10-2*o, d.y-10-2*o, e]);
+    }
+    // Sides
+    tx(dim.x*10) cmx() tx(dim.x*-10) hull() {
+      tx(-5-2*o) cube([5, d.y, d.z]);
+      ty(5) tx(5-o) tz(5+o) cube([e, d.y-10-2*o, d.z-5-o]);
+    } 
+  }
+}
+
+module BB20BoxB(dim, o=-gapd, lock=true)
+{
+  d=dim*20;
+  difference()
+  {
+    BB20Cube(dim);
+    
+    // Center
+    tx(5+o) ty(10+o) tz(5+o) cube([d.x-10-2*o, d.y-20-2*o, d.z]);
+    if (!lock) tx(5+o) tz(5+o) cube([d.x-10-2*o, d.y, d.z]);
+
+    // Top
+    tz(dim.z*20+o) hull() {
+      tz(o) cube([d.x, d.y, 10]);
+      tx(5+o) ty(5+o) tz(-5) cube([d.x-10-2*o, d.y-10-2*o, e]);
+    }
+    // Front and back
+    ty(dim.y*10) cmy() ty(dim.y*-10) hull() {
+      ty(-5-2*o) cube([d.x, 5, d.z]);
+      tx(5) ty(5-o) tz(5+o) cube([d.x-10-2*o, e, d.z-5-o]);
+    } 
+  }
+}
+module BB20MotoBitBottom()
+{  
+  dim=[4,5,2];
+  mpos = [40, 12, 8];    
+  if (GUI)   translate(mpos) color("darkgrey") moto_bit();
+  difference()
+  {      
+    union()
+    {
+      BB20BoxA(dim);
+      //translate(mpos+[0,42,-2]) cube([68,82,8], true); 
+      tx(5.5) ty(1) tz(1) cube([68, 98, 8]);
+      tx(5.5) ty(1) tz(0.5) cube([60-7, 9, 34]);
+    }
+    //#tx(1) ty(10) tz(8) cube([58, 80, 40]);
+    ctx([-20, 5]) WSG(dim); 
+    translate(mpos) color("darkgrey") moto_bit();
+    BB20females([4,5,1], [none, [1,0], [1,0]], H=5.4);
+    tz(20) ty(80) BB20females([4,1,1], [none, [0,1], none], H=5.4);
+  }
+}
+
+module BB20MotoBitTop()
+{  
+  dim=[4,5,2];
+  mpos = [40, 12, 8];    
+  union()
+  {
+    if (GUI) tx(80) tz(40) roty(180) translate(mpos)  color("darkgrey") moto_bit();
+
+    difference()
+    {
+      union()
+      {
+        BB20BoxB(dim);
+      }     
+      //tx(5) ty(1) tz(1) cube([69, 98, 8]);
+      tx(20) ty(5) tz(5) cube([60-5, 9, 34]);
+      
+      BB20females([4,1,2], [[0,1], none, none], H=5.4);
+      tx(20) BB20females([3,1,1], [none, none,[1,0]], H=5.4);
+      ty(20) BB20females([4,3,2], [[1,0], none, [1,0]], H=5.4);
+      
+      ty(20) BB20females([4,3,1], [[0,1], none, none], H=5.4);
+      ty(40) tz(20) BB20females([4,2,1], [[0,1], none, none], H=5.4);
+      
+      ty(5) BB20females([1,1,2], [none, [1,0], none], H=5.4);
+      ty(75) BB20females([4,1,1], [none, [0,1], none], H=5.4);
+      tx(5) ty(10) tz(20) cube([70, 100, 20]);
+      tx(50) ty(30) tz(25) #roty() cylinder(d=15, h=60);
+
+    }      
+    ty(20) BB20supportFemales([4,3,2], [[1,0], none, both]);
+     BB20supportFemales([4,1,2], [[0,1], none, both]);
+      ty(20) BB20supportFemales([4,3,1], [[0,1], none, none]);
+      ty(40) tz(20) BB20supportFemales([4,2,1], [[0,1], none, none]);
+  }  
+}
+
+module moto_bit(gap=0.4)
+{
+  // Platine
+  tx(-58.4/2-gap) cube([58.4+2*gap, 53.6+2*gap, 2.5]);
+  tx(-54/2) ty(31) cube([54, 22, 11.5]);
+  tx(-54/2) ty(10) cube([54, 40, 6]);
+  
+  // Schalter
+  tx(-13/2) ty(7) cube([13, 5, 12]);
+  // Stromstecker
+  tx(-58.4/2-3) ty(14) tz(1.8) cube([14, 9, 11]);
+  tx(-58.4/2-2) ty(18.2) tz(7.7) roty(-90) cylinder(h=20, d=10);
+  
+  // micro:bit Stecker
+  tx(-34.5/2-gap) cube([34.5+2*gap, 76.4+2*gap, 2.5]);
+  tx(-58.4/2-gap) ty(60-gap) cube([58.4+2*gap, 16.5+2*gap, 11.5]);
+  tx(-57.0/2-gap) ty(60-gap) tz(1.8) cube([58.4+2*gap, 21.2+2*gap, 8.6]);
+  tx(-52.0/2-gap) ty(75) tz(5) cube([52+2*gap, 40, 2.5]);
+  
+  // THT Loetstellen
+  ty(65) cube([57, 10, 4], true);
+  ty(17) cube([57, 10, 4], true);
+  ty(24) cube([15, 35, 4], true);
+}
 
 //tx(40) alignds420([0,0,0], 0, screws = 0, axle_lenght = 0);
 
@@ -127,8 +264,9 @@ module CubeSchnitt(dim, o, hh=20)
       cube([dim.x*20+2*o,dim.y*20+2*o, e]);
       tx(5) ty(5) tz(-5-e) cube([dim.x*20-10+2*o, dim.y*20-10+2*o, 5+e]);
     }
-    translate(o3+[5,0,40]) cube(dim*20+2*o3-[10,0,5]);
-    translate(o3+[5,60,hh]) cube(dim*20+2*o3-[10,0,5]);
+    children();
+//    translate(o3+[5,0,40]) cube(dim*20+2*o3-[10,0,5]);
+//    translate(o3+[5,60,hh]) cube(dim*20+2*o3-[10,0,5]);
 //    *difference()
 //    {
 //      translate(o3+[5,0,5]) cube(dim*20+2*o3-[10,0,5]);
@@ -136,20 +274,20 @@ module CubeSchnitt(dim, o, hh=20)
 //    }
   }
 }
-
-module BB20Deckel(dim)
-{
-  intersection()
-  {
-    difference() {
-      BB20Cube(dim);
-      BB20females(dim, [both, none, [0,1]], H=5.4); 
-      //ty(5) BB20females(dim-[0,0.5,0], [none, both, none], H=5.4);
-      //ty(10) BB20Cube(dim-[0,0.75,0.25]);
-    }
-    CubeSchnitt(dim, -gapd);
-  }
-}
+//
+//module BB20Deckel(dim)
+//{
+//  intersection()
+//  {
+//    difference() {
+//      BB20Cube(dim);
+//      BB20females(dim, [both, none, [0,1]], H=5.4); 
+//      //ty(5) BB20females(dim-[0,0.5,0], [none, both, none], H=5.4);
+//      //ty(10) BB20Cube(dim-[0,0.75,0.25]);
+//    }
+//    CubeSchnitt(dim, -gapd);
+//  }
+//}
 
 module Schneider(dim, hh=20)
 {
@@ -176,7 +314,7 @@ module Schneider(dim, hh=20)
         children(0); 
         children(2);
       }
-      CubeSchnitt(dim, gapd, hh) children(3); // groeser
+      CubeSchnitt(dim, gapd, hh) children(4); // groeser
     }
   }
 }
@@ -212,10 +350,20 @@ module BB20Motor()
       tz(40) BB20supportFemales([dim.x, dim.y, 1], [none, [0,1]]);
     }
     union() {
-      translate(o3+[5,0,30]) cube(dim*20+2*o3-[10,0,5]);
+      o3=gapd*[1,1,1];
+    translate(-o3+[5,10,30]) cube(dim*20+2*o3-[10,0,5]);
+    translate(-o3+[5, 0,40]) cube(dim*20+2*o3-[10,0,5]);
+    //translate(-o3+[5,60,30]) cube(dim*20+2*o3-[10,0,5]);
+    }
+    union(){
+      o3=-gapd*[1,1,1];
+    translate(-o3+[5,0,30]) cube(dim*20+2*o3-[10,0,5]);
+    //translate(-o3+[5,60,30]) cube(dim*20+2*o3-[10,0,5]);
+    }
+      //translate(o3+[5,0,30]) cube(dim*20+2*o3-[10,0,5]);
       //cube([dim.x*20, 60, 40]);
       //cube([dim.x*20, dim.y*20, dim.z*10]); 
-  }
+  
   }
   
   
