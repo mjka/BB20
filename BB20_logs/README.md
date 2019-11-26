@@ -1,4 +1,16 @@
 
+**BB20LogCorner(3);**
+
+![BB20LogCorner_3.png](BB20LogCorner_3.png)
+
+    use <BB20_logs.scad>
+    BB20LogCorner(3);
+
+[BB20LogCorner_3.3mf](BB20LogCorner_3.3mf)
+[BB20LogCorner_3.stl](BB20LogCorner_3.stl)
+
+
+
 **BB20LogCorner(2);**
 
 ![BB20LogCorner_2.png](BB20LogCorner_2.png)
