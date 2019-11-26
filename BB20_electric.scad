@@ -4,6 +4,20 @@ include <MCAD/servos.scad>
 type="";
 GUI=1;
 
+///# BB20 electronics
+///## Pinout
+/// * Pin 1: SCL1 
+/// * Pin 2: Servo-PWM 
+/// * Pin 3: SDA 
+/// * Pin 4: Motor- (or GND) 
+/// * Pin 5: Motor+ (or VBat  max. +12V)      
+/// * Pin 6: GND 
+/// * Pin 7: 5V 
+/// * Pin 8: GND DATA 
+/// * Pin 9: NeoPixel-IN 
+/// * Pin 10: NeoPixel-OUT 
+
+
 PART() BB20Servo();
 //PART(100) BB20Light();
 //PART(0) BB20Motor();
@@ -58,11 +72,6 @@ module BB20Servo()
   translate([10,10.5,20]) SupportCube([3, 4, 16.5], true);
 }
 
-module SupportCube(dim, center=false)
-{
-  t = center ? [0,0,0]: dim * 0.5;
-  Support() translate(t) difference() { cube(dim, true); cube(dim-[1,1,-1], true); }
-}
 
 
 module BB20MotorFlansch()
