@@ -16,6 +16,9 @@ MD="$OUT/README.md"
 rm "$MD"
 mkdir -p "$OUT"
 
+git add "$IN"
+git commit -m "$0 $1 auto-commit" "$IN"
+
 cat "$IN" | while read L ; do 
 	if echo "$L" | grep -q "^\s*PART" ; then
 		CMD=$(echo "$L" | cut -f2- -d')' | sed -e 's/\s*//' )
@@ -26,14 +29,19 @@ cat "$IN" | while read L ; do
 		echo -e "\n**$CMD**\n\n![$NAME.png]($NAME.png)\n\n    use <$IN>\n    $CMD\n\n[$NAME.3mf]($NAME.3mf)" >> "$MD"
 	        echo -e "[$NAME.stl]($NAME.stl)\n\n" >> "$MD"
 		#continue	
-	        openscad -D GUI=0 -o "$OUT/$NAME.3mf" "$TMP"
+	        openscad -o "$OUT/$NAME.png" --viewall --autocenter --imgsize 256,256 "$TMP"
 	        openscad -D GUI=0 -o "$OUT/$NAME.stl" "$TMP"
-	        openscad -o "$OUT/$NAME.png" --viewall --autocenter --imgsize 256 256 "$TMP"
+	        openscad -D GUI=0 -o "$OUT/$NAME.3mf" "$TMP"
+		git add "$OUT/$NAME.png" "$OUT/$NAME.stl" "$OUT/$NAME.3mf"
 	elif echo "$L" | grep -q "///" ; then
 		echo "${L#*///}" >> "$MD"
 	fi
 
 done
+git add "$MD"
+git commit -m "$0 $1" "$OUT/"
+#git commit -m "$0 $1" "$MD"
+
 rm "$TMP"
 
 
