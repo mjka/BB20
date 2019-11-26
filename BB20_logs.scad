@@ -2,9 +2,9 @@ include <BB20.scad>
 
 type="";
 
-*union() {
+union() {
 //PART(-100) BB20LogCorner(4);
-//PART(-75) BB20LogCorner(3);
+PART(-75) BB20LogCorner(3);
 PART(-50) BB20LogCorner(2);
 PART(-25) BB20LogCorner(1);
 }
@@ -20,18 +20,19 @@ PART(125,75) BB20LogSingle(3);
 PART(125,25) BB20LogSingle(2);
 PART(125,0) BB20LogSingle(1);
 }
+*union(){
 PART(0) BB20LogHalf(1);
 PART(0,25) BB20LogHalf(2);
 PART(0,75) BB20LogHalf(3);
 PART(25) BB20LogHalf(4);
 PART(50) BB20LogHalf(8);
 
-
 PART(75,0) BB20LogHalfCorner(1);
 PART(75,25) BB20LogHalfCorner(2);
 PART(75,75) BB20LogHalfCorner(3);
 PART(100) BB20LogHalfCorner(4);
 PART(125) BB20LogHalfCorner(8);
+}
 
 module LogCut()
 { 
@@ -103,19 +104,21 @@ module BB20LogCorner(L)
     //tz(-5) ty(30) tx(10) rotz() scale(1.03) translate([-10, -10, -10]) Log(1);
     //tz(25) ty(30) tx(10) rotz() scale(1.03) translate([-10, -10, -10]) Log(1);
     BB20females([1,1,1], [none, none, both]); 
-    ty(L*20-20) BB20females([1,1,1], [none, [0,1], none]);
+    if (L!=2) ty(L*20-20) BB20females([1,1,1], [none, [0,1], none]);
     if (L>2) ty(40) BB20females([1,L-2,1], [none, none, both]);
     if (L>1) ctz([5,10]) ty(30) tx(10) BB20female();
   }
   if (L>1)
   {
-    tz(gapd) ty(20+2) tx(1) SupportCube([18,16, 4.5], false );
-    tz(gapd) ty(20+4) tx(4) SupportCube([12,12, 4.5], false );
+    tz(gapd) ty(20+4) tx(1) SupportCube([18,12, 4.8], false );
+    tz(gapd) ty(20+4) tx(4) SupportCube([12,12, 4.8], false );
   }
   if (L!=2)
   {
     BB20supportFemales([1,L,1], [none, [0,1], none]);
   }
+  if (L==2) 
+    tz(gapd) ty(20+15.5) tx(1) SupportCube([16,4.5,2.2], false );
 }
 
 
