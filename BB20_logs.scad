@@ -2,13 +2,13 @@ include <BB20.scad>
 
 type="";
 
-union() {
-//PART(-100) BB20LogCorner(4);
+*union() {
+PART(-100) BB20LogCorner(4);
 PART(-75) BB20LogCorner(3);
 PART(-50) BB20LogCorner(2);
 PART(-25) BB20LogCorner(1);
 }
-*  union() {
+union() {
 PART() BB20LogDouble(1);
 PART(0,25) BB20LogDouble(2);
 PART(0,75) BB20LogDouble(3);
@@ -83,6 +83,7 @@ module BB20LogSingle(L)
     BB20females([1,L,1], [none, both, none], H=11*L);
     BB20females([1,L,1], [[0,1], none, both]);
   }
+  BB20supportFemales([1,L,1], [[0,1], both, both]);
 }
 
 module BB20LogDouble(L)
@@ -91,7 +92,8 @@ module BB20LogDouble(L)
   {
     Log(L);
     BB20females([1,L,1], [none, both, both], H=11*L);
-  }
+  } 
+  BB20supportFemales([1,L,1], [none, both, both]);
 }
 
 module BB20LogCorner(L)
@@ -118,7 +120,7 @@ module BB20LogCorner(L)
     BB20supportFemales([1,L,1], [none, [0,1], none]);
   }
   if (L==2) 
-    tz(gapd) ty(20+15.5) tx(1) SupportCube([16,4.5,2.2], false );
+    tz(gapd) ty(20+15.5) tx(2) SupportCube([16,4.5,2.2], false );
 }
 
 
